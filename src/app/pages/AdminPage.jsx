@@ -18,7 +18,7 @@ const EMPTY_FORM = {
   tagsInput: "",
 };
 
-import { env } from "@/config/env";
+import { env } from "../../config/env";
 
 function slugify(text) {
   return String(text || "")

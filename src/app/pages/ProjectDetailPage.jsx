@@ -3,7 +3,7 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, Github, Calendar } from "lucide-react";
 import { useProjects } from "../context/ProjectsContext";
 import { Footer } from "../components/Footer";
-import { env } from "@/config/env";
+import { env } from "../../config/env";
 
 function formatDate(value) {
   if (!value) return "";

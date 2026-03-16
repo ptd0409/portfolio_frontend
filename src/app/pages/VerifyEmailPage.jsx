@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, Link } from "react-router-dom";
-import { env } from "@/config/env";
+import { env } from "../../config/env";
 
 export function VerifyEmailPage() {
   const [searchParams] = useSearchParams();

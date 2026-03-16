@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { useAuth } from "./AuthContext";
-import { env } from "@/config/env";
+import { env } from "../../config/env";
 
 const ProjectsContext = createContext(null);
 

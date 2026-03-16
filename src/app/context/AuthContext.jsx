@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { env } from "@/config/env";
+import { env } from "../../config/env";
 
 const ACCESS_TOKEN_KEY = "portfolio_admin_token";
 const REFRESH_TOKEN_KEY = "portfolio_admin_refresh_token";
