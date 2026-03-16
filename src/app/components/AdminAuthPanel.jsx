@@ -35,6 +35,77 @@ export function AdminAuthPanel() {
     reset: "Enter your new password to continue.",
   };
 
+  const clearForm = () => {
+    setEmail("");
+    setPassword("");
+    setNewPassword("");
+    setConfirmPassword("");
+    setMessage("");
+  };
+
+  const switchMode = (nextMode) => {
+    clearForm();
+    setMode(nextMode);
+  };
+
+  const getErrorMessage = (err, currentMode) => {
+    const raw =
+      err?.response?.data?.detail ||
+      err?.response?.data?.message ||
+      err?.message ||
+      "";
+
+    const normalized = String(raw).toLowerCase();
+
+    if (currentMode === "login") {
+      if (
+        normalized.includes("user not found") ||
+        normalized.includes("account not found") ||
+        normalized.includes("admin not found") ||
+        normalized.includes("not registered") ||
+        normalized.includes("does not exist")
+      ) {
+        return "Tài khoản chưa được tạo.";
+      }
+
+      if (
+        normalized.includes("invalid credentials") ||
+        normalized.includes("incorrect password") ||
+        normalized.includes("wrong password") ||
+        normalized.includes("login failed")
+      ) {
+        return "Email hoặc mật khẩu không đúng.";
+      }
+
+      if (normalized.includes("not verified")) {
+        return "Tài khoản chưa xác minh email.";
+      }
+
+      return "Đăng nhập thất bại.";
+    }
+
+    if (currentMode === "register") {
+      if (
+        normalized.includes("already exists") ||
+        normalized.includes("already registered") ||
+        normalized.includes("email already")
+      ) {
+        return "Email này đã được đăng ký.";
+      }
+      return "Đăng ký thất bại.";
+    }
+
+    if (currentMode === "forgot") {
+      return "Không thể gửi email đặt lại mật khẩu.";
+    }
+
+    if (currentMode === "reset") {
+      return "Không thể đặt lại mật khẩu.";
+    }
+
+    return "Có lỗi xảy ra.";
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
@@ -43,26 +114,26 @@ export function AdminAuthPanel() {
     try {
       if (mode === "login") {
         await login({ email, password });
-        setMessage("Login successful.");
+        setMessage("Đăng nhập thành công.");
         setPassword("");
       } else if (mode === "register") {
         if (password !== confirmPassword) {
           throw new Error("Password confirmation does not match");
         }
+
         const res = await register({ email, password });
         setMessage(
-          res.message || "Registration successful. Please check your email"
+          res.message ||
+            "Đăng ký thành công. Vui lòng kiểm tra email để xác minh."
         );
 
-        setEmail("");
-        setPassword("");
-        setConfirmPassword("");
-        setNewPassword("");
+        clearForm();
         setMode("login");
       } else if (mode === "forgot") {
         const res = await forgotPassword(email);
         setMessage(
-          res.message || "If this email exists, a reset link has been sent."
+          res.message ||
+            "Nếu email tồn tại, liên kết đặt lại mật khẩu đã được gửi."
         );
         setEmail("");
       } else if (mode === "reset") {
@@ -70,12 +141,19 @@ export function AdminAuthPanel() {
           token: resetToken,
           newPassword,
         });
-        setMessage(res.message || "Password reset successful.");
+        setMessage(res.message || "Đặt lại mật khẩu thành công.");
         setNewPassword("");
         setMode("login");
       }
     } catch (err) {
-      setMessage(err.message || "Something went wrong.");
+      if (
+        mode === "register" &&
+        err?.message === "Password confirmation does not match"
+      ) {
+        setMessage("Mật khẩu xác nhận không khớp.");
+      } else {
+        setMessage(getErrorMessage(err, mode));
+      }
     } finally {
       setLoading(false);
     }
@@ -84,7 +162,6 @@ export function AdminAuthPanel() {
   return (
     <div className="min-h-[70vh] flex items-center justify-center">
       <div className="w-full max-w-6xl grid lg:grid-cols-2 gap-10 items-center">
-        {/* Left promo panel */}
         <div className="hidden lg:flex flex-col justify-center">
           <div className="bg-[#d4c896] rounded-3xl p-10 border-2 border-[#00003d] shadow-lg">
             <div className="w-20 h-20 rounded-2xl bg-white border-2 border-[#00003d] flex items-center justify-center mb-6">
@@ -105,7 +182,6 @@ export function AdminAuthPanel() {
           </div>
         </div>
 
-        {/* Right auth card */}
         <div className="w-full max-w-xl mx-auto">
           <div className="bg-white rounded-2xl border border-gray-200 shadow-lg p-8 md:p-10">
             <div className="mb-8">
@@ -165,6 +241,7 @@ export function AdminAuthPanel() {
                   </div>
                 </div>
               )}
+
               {mode === "register" && (
                 <div>
                   <label className="block text-[#00003d] font-semibold mb-2">
@@ -220,7 +297,6 @@ export function AdminAuthPanel() {
               </button>
             </form>
 
-            {/* Footer links */}
             <div className="mt-6 space-y-3 text-sm">
               {mode === "login" && (
                 <>
@@ -228,10 +304,7 @@ export function AdminAuthPanel() {
                     Forgot your password?{" "}
                     <button
                       type="button"
-                      onClick={() => {
-                        setMessage("");
-                        setMode("forgot");
-                      }}
+                      onClick={() => switchMode("forgot")}
                       className="text-[#00003d] font-semibold hover:opacity-70"
                     >
                       Reset it
@@ -242,10 +315,7 @@ export function AdminAuthPanel() {
                     Don&apos;t have an account?{" "}
                     <button
                       type="button"
-                      onClick={() => {
-                        setMessage("");
-                        setMode("register");
-                      }}
+                      onClick={() => switchMode("register")}
                       className="text-[#00003d] font-semibold hover:opacity-70"
                     >
                       Register
@@ -259,10 +329,7 @@ export function AdminAuthPanel() {
                   Already have an account?{" "}
                   <button
                     type="button"
-                    onClick={() => {
-                      setMessage("");
-                      setMode("login");
-                    }}
+                    onClick={() => switchMode("login")}
                     className="text-[#00003d] font-semibold hover:opacity-70"
                   >
                     Login
@@ -276,10 +343,7 @@ export function AdminAuthPanel() {
                     Remembered your password?{" "}
                     <button
                       type="button"
-                      onClick={() => {
-                        setMessage("");
-                        setMode("login");
-                      }}
+                      onClick={() => switchMode("login")}
                       className="text-[#00003d] font-semibold hover:opacity-70"
                     >
                       Login
@@ -290,10 +354,7 @@ export function AdminAuthPanel() {
                     Don&apos;t have an account?{" "}
                     <button
                       type="button"
-                      onClick={() => {
-                        setMessage("");
-                        setMode("register");
-                      }}
+                      onClick={() => switchMode("register")}
                       className="text-[#00003d] font-semibold hover:opacity-70"
                     >
                       Register
@@ -307,10 +368,7 @@ export function AdminAuthPanel() {
                   Back to{" "}
                   <button
                     type="button"
-                    onClick={() => {
-                      setMessage("");
-                      setMode("login");
-                    }}
+                    onClick={() => switchMode("login")}
                     className="text-[#00003d] font-semibold hover:opacity-70"
                   >
                     Login
