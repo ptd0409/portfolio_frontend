@@ -65,7 +65,7 @@ export function AdminAuthPanel() {
         normalized.includes("not registered") ||
         normalized.includes("does not exist")
       ) {
-        return "Tài khoản chưa được tạo.";
+        return "Account is not created!";
       }
 
       if (
@@ -74,14 +74,14 @@ export function AdminAuthPanel() {
         normalized.includes("wrong password") ||
         normalized.includes("login failed")
       ) {
-        return "Email hoặc mật khẩu không đúng.";
+        return "Email or password is incorrect!";
       }
 
       if (normalized.includes("not verified")) {
-        return "Tài khoản chưa xác minh email.";
+        return "Account is not verified!";
       }
 
-      return "Đăng nhập thất bại.";
+      return "Login failed!";
     }
 
     if (currentMode === "register") {
@@ -90,20 +90,20 @@ export function AdminAuthPanel() {
         normalized.includes("already registered") ||
         normalized.includes("email already")
       ) {
-        return "Email này đã được đăng ký.";
+        return "Email existed!";
       }
-      return "Đăng ký thất bại.";
+      return "Register failed!";
     }
 
     if (currentMode === "forgot") {
-      return "Không thể gửi email đặt lại mật khẩu.";
+      return "Cannot send email to reset your password!";
     }
 
     if (currentMode === "reset") {
-      return "Không thể đặt lại mật khẩu.";
+      return "Cannot reset your password!";
     }
 
-    return "Có lỗi xảy ra.";
+    return "Something went wrong!";
   };
 
   const handleSubmit = async (e) => {
@@ -114,7 +114,7 @@ export function AdminAuthPanel() {
     try {
       if (mode === "login") {
         await login({ email, password });
-        setMessage("Đăng nhập thành công.");
+        setMessage("Login successfully!");
         setPassword("");
       } else if (mode === "register") {
         if (password !== confirmPassword) {
@@ -124,7 +124,7 @@ export function AdminAuthPanel() {
         const res = await register({ email, password });
         setMessage(
           res.message ||
-            "Đăng ký thành công. Vui lòng kiểm tra email để xác minh."
+            "Register successfully! Please check your email to verify."
         );
 
         clearForm();
@@ -133,7 +133,7 @@ export function AdminAuthPanel() {
         const res = await forgotPassword(email);
         setMessage(
           res.message ||
-            "Nếu email tồn tại, liên kết đặt lại mật khẩu đã được gửi."
+            "If email existed, the link to reset your password was sent."
         );
         setEmail("");
       } else if (mode === "reset") {
@@ -141,7 +141,7 @@ export function AdminAuthPanel() {
           token: resetToken,
           newPassword,
         });
-        setMessage(res.message || "Đặt lại mật khẩu thành công.");
+        setMessage(res.message || "Reset password successfully!");
         setNewPassword("");
         setMode("login");
       }
@@ -150,7 +150,7 @@ export function AdminAuthPanel() {
         mode === "register" &&
         err?.message === "Password confirmation does not match"
       ) {
-        setMessage("Mật khẩu xác nhận không khớp.");
+        setMessage("Password confirmation does not match!");
       } else {
         setMessage(getErrorMessage(err, mode));
       }
