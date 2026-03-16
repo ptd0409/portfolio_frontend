@@ -1,9 +1,6 @@
 import { Mail, MapPin, Phone } from "lucide-react";
 import { useState } from "react";
 
-const API_BASE =
-  import.meta.env.VITE_API_BASE || "http://127.0.0.1:8000/api/v1";
-
 export function ContactSection() {
   const [formData, setFormData] = useState({
     name: "",

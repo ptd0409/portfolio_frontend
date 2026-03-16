@@ -3,9 +3,7 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, Github, Calendar } from "lucide-react";
 import { useProjects } from "../context/ProjectsContext";
 import { Footer } from "../components/Footer";
-
-const API_BASE =
-  import.meta.env.VITE_API_BASE || "http://127.0.0.1:8000/api/v1";
+import { env } from "@/config/env";
 
 function formatDate(value) {
   if (!value) return "";
@@ -47,7 +45,7 @@ export function ProjectDetailPage() {
           setProject(listItem);
         }
 
-        const res = await fetch(`${API_BASE}/projects/${slug}`);
+        const res = await fetch(`${env.apiBase}/projects/${slug}`);
         let json = null;
 
         try {

@@ -1,13 +1,11 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { useAuth } from "./AuthContext";
-
-const API_BASE =
-  import.meta.env.VITE_API_BASE || "http://127.0.0.1:8000/api/v1";
+import { env } from "@/config/env";
 
 const ProjectsContext = createContext(null);
 
 async function apiGet(path) {
-  const res = await fetch(`${API_BASE}${path}`);
+  const res = await fetch(`${env.apiBase}${path}`);
   let json = null;
   try {
     json = await res.json();
@@ -75,7 +73,7 @@ export function ProjectsProvider({ children }) {
   }, []);
 
   const addProject = async (payload) => {
-    const res = await fetch(`${API_BASE}/admin/projects`, {
+    const res = await fetch(`${env.apiBase}/admin/projects`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -95,7 +93,7 @@ export function ProjectsProvider({ children }) {
   };
 
   const updateProject = async (slug, payload) => {
-    const res = await fetch(`${API_BASE}/admin/projects/${slug}`, {
+    const res = await fetch(`${env.apiBase}/admin/projects/${slug}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -115,7 +113,7 @@ export function ProjectsProvider({ children }) {
   };
 
   const deleteProject = async (slug) => {
-    const res = await fetch(`${API_BASE}/admin/projects/${slug}`, {
+    const res = await fetch(`${env.apiBase}/admin/projects/${slug}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,

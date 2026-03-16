@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, Link } from "react-router-dom";
-
-const API_BASE =
-  import.meta.env.VITE_API_BASE || "http://127.0.0.1:8000/api/v1";
+import { env } from "@/config/env";
 
 export function VerifyEmailPage() {
   const [searchParams] = useSearchParams();
@@ -20,7 +18,7 @@ export function VerifyEmailPage() {
 
     const run = async () => {
       try {
-        const res = await fetch(`${API_BASE}/auth/verify-email`, {
+        const res = await fetch(`${env.apiBase}/auth/verify-email`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

@@ -18,8 +18,7 @@ const EMPTY_FORM = {
   tagsInput: "",
 };
 
-const API_BASE =
-  import.meta.env.VITE_API_BASE || "http://127.0.0.1:8000/api/v1";
+import { env } from "@/config/env";
 
 function slugify(text) {
   return String(text || "")
@@ -250,7 +249,7 @@ export function AdminPage() {
       data.append("file", file);
       data.append("project_slug", currentSlug);
 
-      const res = await fetch(`${API_BASE}/admin/uploads/cover`, {
+      const res = await fetch(`${env.apiBase}/admin/uploads/cover`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${currentToken}`,
@@ -507,7 +506,7 @@ export function AdminPage() {
                         data.append("project_slug", currentSlug);
 
                         const res = await fetch(
-                          `${API_BASE}/admin/uploads/image`,
+                          `${env.apiBase}/admin/uploads/image`,
                           {
                             method: "POST",
                             headers: {

@@ -1,7 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-
-const API_BASE =
-  import.meta.env.VITE_API_BASE || "http://127.0.0.1:8000/api/v1";
+import { env } from "@/config/env";
 
 const ACCESS_TOKEN_KEY = "portfolio_admin_token";
 const REFRESH_TOKEN_KEY = "portfolio_admin_refresh_token";
@@ -24,7 +22,7 @@ export function AuthProvider({ children }) {
   }, []);
 
   const login = async ({ email, password }) => {
-    const res = await fetch(`${API_BASE}/auth/login`, {
+    const res = await fetch(`${env.apiBase}/auth/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -48,7 +46,7 @@ export function AuthProvider({ children }) {
   };
 
   const register = async ({ email, password }) => {
-    const res = await fetch(`${API_BASE}/auth/register`, {
+    const res = await fetch(`${env.apiBase}/auth/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -66,7 +64,7 @@ export function AuthProvider({ children }) {
   };
 
   const forgotPassword = async (email) => {
-    const res = await fetch(`${API_BASE}/auth/forgot-password`, {
+    const res = await fetch(`${env.apiBase}/auth/forgot-password`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -84,7 +82,7 @@ export function AuthProvider({ children }) {
   };
 
   const resetPassword = async ({ token, newPassword }) => {
-    const res = await fetch(`${API_BASE}/auth/reset-password`, {
+    const res = await fetch(`${env.apiBase}/auth/reset-password`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -112,7 +110,7 @@ export function AuthProvider({ children }) {
       throw new Error("Missing refresh token");
     }
 
-    const res = await fetch(`${API_BASE}/auth/refresh`, {
+    const res = await fetch(`${env.apiBase}/auth/refresh`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -144,7 +142,7 @@ export function AuthProvider({ children }) {
 
     try {
       if (savedRefreshToken) {
-        await fetch(`${API_BASE}/auth/logout`, {
+        await fetch(`${env.apiBase}/auth/logout`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
